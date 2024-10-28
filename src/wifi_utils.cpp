@@ -153,8 +153,10 @@ namespace WIFI_Utils {
     }
 
     void setup() {
-        if (!Config.digi.ecoMode) startWiFi();
-        btStop();
+        if ((!Config.digi.ecoMode) && Config.ethernet.WiFi_enable) {
+            startWiFi();
+            btStop();
+        }
     }
 
 }
