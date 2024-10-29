@@ -8,8 +8,7 @@
         "AP": []
     },
     "ethernet": {
-        "ethernet_enable": false,
-        "WiFi_enable": true
+        "use_lan": false
     },
     "beacon": {
         "latitude": 0.0,

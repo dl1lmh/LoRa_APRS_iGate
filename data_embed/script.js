@@ -135,8 +135,7 @@ function loadSettings(settings) {
     document.getElementById("beacon.sendViaRF").checked                 = settings.beacon.sendViaRF;
 
 // Ethernet
-    document.getElementById("ethernet.ethernet_enable").checked         = settings.ethernet.ethernet_enable;
-    document.getElementById("ethernet.WiFi_enable").checked             = settings.ethernet.WiFi_enable;
+    document.getElementById("ethernet.use_lan").checked                 = settings.ethernet.use_lan;
 
     document.getElementById("beacon.gpsActive").checked                 = settings.beacon.gpsActive;
     document.getElementById("beacon.gpsAmbiguity").checked              = settings.beacon.gpsAmbiguity;

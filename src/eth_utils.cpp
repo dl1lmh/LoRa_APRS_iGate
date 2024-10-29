@@ -1,4 +1,5 @@
 #include <ETH.h>
+#include <SPI.h>
 
 #include "configuration.h"
 #include "display.h"
@@ -16,16 +17,21 @@ bool EthConnected       = false;
 namespace ETH_Utils {
 
     void EthEvent(WiFiEvent_t event) {
+        String hostname = "iGate-" + Config.callsign;
         switch (event) {
             case ARDUINO_EVENT_ETH_START:
+                ETH.setHostname(hostname.c_str());
                 break;
                 
             case ARDUINO_EVENT_ETH_CONNECTED:
                 EthLink = true;
+                Serial.println("Got Link");
                 break;
 
             case ARDUINO_EVENT_ETH_GOT_IP:
                 EthGotIP = true;
+                EthConnected = true;
+                Serial.println("GOT LAN IP");
                 break;
 
             case ARDUINO_EVENT_ETH_DISCONNECTED:
@@ -54,7 +60,7 @@ namespace ETH_Utils {
                     backUpDigiModeEth = false;
                 }
             } else {
-                if (!EthConnected) {
+                if ((!EthConnected) && !backUpDigiMode) {
                     Serial.println("Lost LAN Connection!");
                     backUpDigiModeEth = true;
                 }
@@ -64,14 +70,11 @@ namespace ETH_Utils {
 
     void startETH() {
         unsigned long start = millis();
-
-        String hostname = "iGate-" + Config.callsign;
-        ETH.setHostname(hostname.c_str());
         WiFi.onEvent(ETH_Utils::EthEvent);
         displayShow("", "Connecting to LAN:", "", "...", 0);
         Serial.print("Connecting to LAN: ");
         ETH.begin();
-        while (((!EthConnected) && (!EthGotIP)) || ((millis() - start) > 10000))
+        while (((!EthLink) && (!EthGotIP)) || ((millis() - start) > 10000))
         {
             delay(500);
             #ifdef INTERNAL_LED_PIN
@@ -89,7 +92,7 @@ namespace ETH_Utils {
             EthConnected = false;
             delay(5000);
         }
-        if (EthConnected && EthGotIP) EthConnected = true;
+        if (EthLink && EthGotIP) EthConnected = true;
         #ifdef INTERNAL_LED_PIN
                 digitalWrite(INTERNAL_LED_PIN,LOW);
         #endif
@@ -106,6 +109,6 @@ namespace ETH_Utils {
     }
 
     void setup() {
-        if (Config.ethernet.ethernet_enable) startETH();
+        if (Config.ethernet.use_lan) startETH();
     }
 }

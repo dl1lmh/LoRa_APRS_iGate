@@ -44,7 +44,7 @@ extern bool                 transmitFlag;
 extern bool                 backUpDigiMode;
 extern bool                 backUpDigiModeEth;
 extern bool                 backUpDigiModeWiFi;
-extern uint32_t             lastBackupDigiTime;
+
 
 extern std::vector<LastHeardStation>    lastHeardStations;
 
@@ -83,13 +83,13 @@ namespace Utils {
     }
 
     String getLocalIP() {
-        if (Config.digi.ecoMode && !Config.ethernet.ethernet_enable) {
+        if (Config.digi.ecoMode) {
             return "** WiFi EcoMode **";
-        } else if (!WiFiConnected && !Config.ethernet.ethernet_enable) {
+        } else if (!WiFiConnected && !Config.ethernet.use_lan) {
             return "IP :  192.168.4.1";
         } else if (backUpDigiMode) {
             return "- BACKUP DIGI MODE -";
-        } else if (Config.ethernet.ethernet_enable && EthConnected) {
+        } else if (Config.ethernet.use_lan && EthConnected) {
             return "IP :  " + String(ETH.localIP()[0]) + "." + String(ETH.localIP()[1]) + "." + String(ETH.localIP()[2]) + "." + String(ETH.localIP()[3]);
         } else {
             return "IP :  " + String(WiFi.localIP()[0]) + "." + String(WiFi.localIP()[1]) + "." + String(WiFi.localIP()[2]) + "." + String(WiFi.localIP()[3]);
@@ -495,22 +495,4 @@ namespace Utils {
         return true;
     }
 
-    void checkNetwork() {
-        WIFI_Utils::checkWiFi();
-        ETH_Utils::checkETH();
-        if (Config.ethernet.ethernet_enable && Config.ethernet.WiFi_enable) {
-            if (backUpDigiModeEth && backUpDigiModeWiFi) {
-                backUpDigiMode = true;
-            } else {
-                backUpDigiMode = false;
-            }
-        }
-        if (Config.ethernet.ethernet_enable && !Config.ethernet.WiFi_enable) {
-            backUpDigiMode = backUpDigiModeEth;
-        }
-        if (!Config.ethernet.ethernet_enable && Config.ethernet.WiFi_enable) {
-            backUpDigiMode = backUpDigiModeWiFi;
-        }
-        if (backUpDigiMode) lastBackupDigiTime = millis();
-    }
 }

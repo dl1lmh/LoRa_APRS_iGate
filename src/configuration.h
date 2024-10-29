@@ -19,8 +19,7 @@ public:
 
 class ETHERNET {
 public:
-    bool ethernet_enable;
-    bool WiFi_enable;
+    bool use_lan;
 };
 
 class BEACON {

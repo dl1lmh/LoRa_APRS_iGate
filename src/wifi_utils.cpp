@@ -29,11 +29,11 @@ namespace WIFI_Utils {
                 uint32_t WiFiCheck = millis() - lastBackupDigiTime;
                 if (WiFi.status() != WL_CONNECTED && WiFiCheck >= 15 * 60 * 1000) {
                     Serial.println("*** Stopping BackUp Digi Mode ***");
-                    backUpDigiModeWiFi = false;
+                    backUpDigiMode = false;
                     wifiCounter = 0;
                 } else if (WiFi.status() == WL_CONNECTED) {
                     Serial.println("*** WiFi Reconnect Success (Stopping Backup Digi Mode) ***");
-                    backUpDigiModeWiFi = false;
+                    backUpDigiMode = false;
                     wifiCounter = 0;
                 }
             }
@@ -50,7 +50,8 @@ namespace WIFI_Utils {
                 }
                 if (wifiCounter >= 2) {
                     Serial.println("*** Starting BackUp Digi Mode ***");
-                    backUpDigiModeWiFi = true;
+                    backUpDigiMode = true;
+                    lastBackupDigiTime = millis();
                 }
             }
         }
@@ -153,7 +154,7 @@ namespace WIFI_Utils {
     }
 
     void setup() {
-        if ((!Config.digi.ecoMode) && Config.ethernet.WiFi_enable) {
+        if ((!Config.digi.ecoMode) && !Config.ethernet.use_lan) {
             startWiFi();
             btStop();
         }

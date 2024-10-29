@@ -70,9 +70,9 @@ namespace APRS_IS_Utils {
 
     void checkStatus() {
         String netState, aprsisState;
-        if (Config.ethernet.WiFi_enable && (WiFi.status() == WL_CONNECTED)) {
+        if (!Config.ethernet.use_lan && (WiFi.status() == WL_CONNECTED)) {
             netState = "WiFi: OK";
-        } else if (Config.ethernet.ethernet_enable && EthConnected) {
+        } else if (Config.ethernet.use_lan && EthConnected) {
             netState = "LAN: OK";
         } else {
             if (backUpDigiMode || Config.digi.ecoMode) {

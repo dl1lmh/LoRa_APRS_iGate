@@ -17,8 +17,8 @@ NTPClient   timeClient(ntpUDP, "pool.ntp.org", 0, 15 * 60 * 1000);  // Update in
 namespace NTP_Utils {
 
     void setup() {
-        if ((Config.ethernet.WiFi_enable && WiFi.status() == WL_CONNECTED && !Config.digi.ecoMode && Config.callsign != "NOCALL-10") ||
-                                (Config.ethernet.ethernet_enable && EthConnected)) {
+        if ((!Config.ethernet.use_lan && WiFi.status() == WL_CONNECTED && !Config.digi.ecoMode && Config.callsign != "NOCALL-10") ||
+                                (Config.ethernet.use_lan && EthConnected && !Config.digi.ecoMode && Config.callsign != "NOCALL-10")) {
             int gmt = Config.ntp.gmtCorrection * 3600;
             timeClient.setTimeOffset(gmt);
             timeClient.begin();
@@ -26,8 +26,8 @@ namespace NTP_Utils {
     }
 
     void update() {
-        if ((Config.ethernet.WiFi_enable && WiFi.status() == WL_CONNECTED && !Config.digi.ecoMode && Config.callsign != "NOCALL-10") || 
-                                (Config.ethernet.ethernet_enable && EthConnected)) timeClient.update();
+        if ((!Config.ethernet.use_lan && WiFi.status() == WL_CONNECTED && !Config.digi.ecoMode && Config.callsign != "NOCALL-10") || 
+                                (Config.ethernet.use_lan && EthConnected && !Config.digi.ecoMode && Config.callsign != "NOCALL-10")) timeClient.update();
     }
 
     String getFormatedTime() {

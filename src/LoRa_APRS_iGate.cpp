@@ -59,9 +59,11 @@ uint32_t            lastBatteryCheck        = 0;
 bool                backUpDigiMode          = false;
 bool                backUpDigiModeEth       = false;
 bool                backUpDigiModeWiFi      = false;
-uint32_t            lastBackupDigiTime      = millis();
+uint32_t            lastBackupDigiTime      = 0;
 
 bool                modemLoggedToAPRSIS     = false;
+
+extern bool         EthConnected;
 
 std::vector<ReceivedPacket> receivedPackets;
 
@@ -73,7 +75,7 @@ void setup() {
     Serial.begin(115200);
     POWER_Utils::setup();
     Utils::setupDisplay();
-    LoRa_Utils::setup();
+    //LoRa_Utils::setup();
     Utils::validateFreqs();
     GPS_Utils::setup();
 
@@ -150,12 +152,14 @@ void loop() {
 
     thirdLine = Utils::getLocalIP();
 
-    Utils::checkNetwork();
+    if (!Config.ethernet.use_lan) WIFI_Utils::checkWiFi();
+    if (Config.ethernet.use_lan) ETH_Utils::checkETH();
 
     #ifdef HAS_A7670
         if (Config.aprs_is.active && !modemLoggedToAPRSIS) A7670_Utils::APRS_IS_connect();
     #else
-        if (Config.aprs_is.active && (WiFi.status() == WL_CONNECTED) && !espClient.connected()) APRS_IS_Utils::connect();
+        if (!Config.ethernet.use_lan && Config.aprs_is.active && (WiFi.status() == WL_CONNECTED) && !espClient.connected()) APRS_IS_Utils::connect();
+        if (Config.ethernet.use_lan && Config.aprs_is.active && EthConnected && !espClient.connected()) APRS_IS_Utils::connect();
     #endif
 
     NTP_Utils::update();
