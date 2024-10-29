@@ -9,6 +9,9 @@ extern bool             backUpDigiMode;
 extern bool             backUpDigiModeEth;
 extern uint32_t         lastBackupDigiTime;
 
+uint32_t    previousEthMillis  = 0;
+uint8_t     EthCounter         = 0;
+
 bool EthLink            = false;
 bool EthGotIP           = false;
 bool EthConnected       = false;
@@ -25,18 +28,14 @@ namespace ETH_Utils {
                 
             case ARDUINO_EVENT_ETH_CONNECTED:
                 EthLink = true;
-                Serial.println("Got Link");
                 break;
 
             case ARDUINO_EVENT_ETH_GOT_IP:
                 EthGotIP = true;
                 EthConnected = true;
-                Serial.println("GOT LAN IP");
                 break;
 
             case ARDUINO_EVENT_ETH_DISCONNECTED:
-                EthLink = false;
-                EthGotIP = false;
                 EthConnected = false;
                 break;
 
@@ -55,14 +54,29 @@ namespace ETH_Utils {
     void checkETH() {
         if (!Config.digi.ecoMode) {
             if (backUpDigiMode) {
-                if (EthConnected) {
-                    Serial.println("LAN Reconnected...");
-                    backUpDigiModeEth = false;
+                uint32_t EthCheck = millis() - lastBackupDigiTime;
+                if (!EthConnected && EthCheck >= 15 * 60 * 1000) {
+                    Serial.println("*** Stopping BackUp Digi Mode ***");
+                    backUpDigiMode = false;
+                } else if (EthConnected) {
+                    Serial.println("*** LAN Reconnect Success (Stopping Backup Digi Mode) ***");
+                    backUpDigiMode = false;
+                    EthCounter = 0;
                 }
-            } else {
-                if ((!EthConnected) && !backUpDigiMode) {
-                    Serial.println("Lost LAN Connection!");
-                    backUpDigiModeEth = true;
+            }
+
+            if (!backUpDigiMode && !EthConnected && ((millis() - previousEthMillis) >= 30 * 1000)) {
+                Serial.print(millis());
+                Serial.println("Waiting for LAN Reconnect...");
+                previousEthMillis = millis();
+
+                if (Config.backupDigiMode) {
+                    EthCounter++;
+                }
+                if (EthCounter >= 2) {
+                    Serial.println("*** LAN lost. Starting BackUp Digi Mode ***");
+                    backUpDigiMode = true;
+                    lastBackupDigiTime = millis();
                 }
             }
         }
@@ -109,6 +123,6 @@ namespace ETH_Utils {
     }
 
     void setup() {
-        if (Config.ethernet.use_lan) startETH();
+        if (Config.ethernet.use_lan && !Config.digi.ecoMode) startETH();
     }
 }
