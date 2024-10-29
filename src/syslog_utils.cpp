@@ -1,10 +1,13 @@
 #include <WiFiUdp.h>
 #include <WiFi.h>
+#include <ETH.h>
 #include "configuration.h"
 #include "syslog_utils.h"
+#include "eth_utils.h"
 #include "gps_utils.h"
 
 extern Configuration    Config;
+extern bool             EthConnected;
 
 WiFiUDP udpClient;
 
@@ -12,7 +15,7 @@ WiFiUDP udpClient;
 namespace SYSLOG_Utils {
 
     void log(const uint8_t type, const String& packet, const int rssi, const float snr, const int freqError) {
-        if (Config.syslog.active && WiFi.status() == WL_CONNECTED) {
+        if (Config.syslog.active && (( Config.ethernet.WiFi_enable && (WiFi.status() == WL_CONNECTED)) || (Config.ethernet.ethernet_enable && EthConnected))) {
             String syslogPacket = "<165>1 - ";
             syslogPacket.concat(Config.callsign);
             syslogPacket.concat(" CA2RXU_LoRa_iGate_1.3 - - - "); //RFC5424 The Syslog Protocol
@@ -111,8 +114,9 @@ namespace SYSLOG_Utils {
     }
 
     void setup() {
-        if (Config.syslog.active && WiFi.status() == WL_CONNECTED) {
-            udpClient.begin(WiFi.localIP(), 0);
+        if (Config.syslog.active && (( Config.ethernet.WiFi_enable && (WiFi.status() == WL_CONNECTED)) || (Config.ethernet.ethernet_enable && EthConnected))) {
+            if (Config.ethernet.ethernet_enable && EthConnected) udpClient.begin(ETH.localIP(), 0);
+            if (Config.ethernet.WiFi_enable && !EthConnected) udpClient.begin(WiFi.localIP(), 0); 
             Serial.println("init : Syslog Server  ...     done!    (at " + Config.syslog.server + ")");
         }
     }
