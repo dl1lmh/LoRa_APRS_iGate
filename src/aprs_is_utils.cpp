@@ -75,7 +75,7 @@ namespace APRS_IS_Utils {
         } else if (Config.ethernet.use_lan && EthConnected) {
             netState = "LAN: OK";
         } else {
-            if (backUpDigiMode || Config.digi.ecoMode) {
+            if (backUpDigiMode || Config.digi.ecoMode || (Config.ethernet.use_lan && !EthConnected) ) {
                 netState = "Net: -- ";
             } else {
                 netState = "WiFi: AP";
