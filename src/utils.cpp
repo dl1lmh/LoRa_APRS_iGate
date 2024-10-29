@@ -1,5 +1,6 @@
 #include <TinyGPS++.h>
 #include <WiFi.h>
+#include <ETH.h>
 #include "configuration.h"
 #include "station_utils.h"
 #include "battery_utils.h"
@@ -9,6 +10,7 @@
 #include "A7670_utils.h"
 #include "lora_utils.h"
 #include "wifi_utils.h"
+#include "eth_utils.h"
 #include "eth_utils.h"
 #include "gps_utils.h"
 #include "wx_utils.h"
@@ -34,6 +36,7 @@ extern float                snr;
 extern int                  freqError;
 extern String               distance;
 extern bool                 WiFiConnected;
+extern bool                 EthConnected;
 extern int                  wxModuleType;
 extern bool                 backUpDigiMode;
 extern bool                 shouldSleepLowVoltage;
@@ -80,12 +83,14 @@ namespace Utils {
     }
 
     String getLocalIP() {
-        if (Config.digi.ecoMode) {
-            return "** WiFi AP  Killed **";
-        } else if (!WiFiConnected) {
+        if (Config.digi.ecoMode && !Config.ethernet.ethernet_enable) {
+            return "** WiFi EcoMode **";
+        } else if (!WiFiConnected && !Config.ethernet.ethernet_enable) {
             return "IP :  192.168.4.1";
         } else if (backUpDigiMode) {
             return "- BACKUP DIGI MODE -";
+        } else if (Config.ethernet.ethernet_enable && EthConnected) {
+            return "IP :  " + String(ETH.localIP()[0]) + "." + String(ETH.localIP()[1]) + "." + String(ETH.localIP()[2]) + "." + String(ETH.localIP()[3]);
         } else {
             return "IP :  " + String(WiFi.localIP()[0]) + "." + String(WiFi.localIP()[1]) + "." + String(WiFi.localIP()[2]) + "." + String(WiFi.localIP()[3]);
         }        

@@ -28,6 +28,7 @@ ________________________________________________________________________________
 #include "power_utils.h"
 #include "lora_utils.h"
 #include "wifi_utils.h"
+#include "eth_utils.h"
 #include "digi_utils.h"
 #include "gps_utils.h"
 #include "web_utils.h"
@@ -123,6 +124,7 @@ void setup() {
     #endif
     DIGI_Utils::checkEcoMode();
     WIFI_Utils::setup();
+    ETH_Utils::setup();
     NTP_Utils::setup();
     SYSLOG_Utils::setup();
     WX_Utils::setup();

@@ -105,7 +105,7 @@ namespace ETH_Utils {
         }        
     }
 
-    void Setup() {
+    void setup() {
         if (Config.ethernet.ethernet_enable) startETH();
     }
 }
