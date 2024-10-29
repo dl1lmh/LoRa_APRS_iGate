@@ -57,6 +57,7 @@ uint32_t            lastBatteryCheck        = 0;
 
 bool                backUpDigiMode          = false;
 bool                backUpDigiModeEth       = false;
+bool                backUpDigiModeWiFi      = false;
 uint32_t            lastBackupDigiTime      = millis();
 
 bool                modemLoggedToAPRSIS     = false;
@@ -147,7 +148,7 @@ void loop() {
 
     thirdLine = Utils::getLocalIP();
 
-    WIFI_Utils::checkWiFi();
+    Utils::checkNetwork();
 
     #ifdef HAS_A7670
         if (Config.aprs_is.active && !modemLoggedToAPRSIS) A7670_Utils::APRS_IS_connect();

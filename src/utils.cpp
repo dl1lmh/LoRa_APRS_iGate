@@ -9,6 +9,7 @@
 #include "A7670_utils.h"
 #include "lora_utils.h"
 #include "wifi_utils.h"
+#include "eth_utils.h"
 #include "gps_utils.h"
 #include "wx_utils.h"
 #include "display.h"
@@ -37,6 +38,10 @@ extern int                  wxModuleType;
 extern bool                 backUpDigiMode;
 extern bool                 shouldSleepLowVoltage;
 extern bool                 transmitFlag;
+extern bool                 backUpDigiMode;
+extern bool                 backUpDigiModeEth;
+extern bool                 backUpDigiModeWiFi;
+extern uint32_t             lastBackupDigiTime;
 
 extern std::vector<LastHeardStation>    lastHeardStations;
 
@@ -485,4 +490,22 @@ namespace Utils {
         return true;
     }
 
+    void checkNetwork() {
+        WIFI_Utils::checkWiFi();
+        ETH_Utils::checkETH();
+        if (Config.ethernet.ethernet_enable && Config.ethernet.WiFi_enable) {
+            if (backUpDigiModeEth && backUpDigiModeWiFi) {
+                backUpDigiMode = true;
+            } else {
+                backUpDigiMode = false;
+            }
+        }
+        if (Config.ethernet.ethernet_enable && !Config.ethernet.WiFi_enable) {
+            backUpDigiMode = backUpDigiModeEth;
+        }
+        if (!Config.ethernet.ethernet_enable && Config.ethernet.WiFi_enable) {
+            backUpDigiMode = backUpDigiModeWiFi;
+        }
+        if (backUpDigiMode) lastBackupDigiTime = millis();
+    }
 }

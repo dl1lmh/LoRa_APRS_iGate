@@ -11,6 +11,7 @@ extern uint8_t          myWiFiAPIndex;
 extern int              myWiFiAPSize;
 extern WiFi_AP          *currentWiFi;
 extern bool             backUpDigiMode;
+extern bool             backUpDigiModeWiFi;
 extern uint32_t         lastBackupDigiTime;
 
 bool        WiFiConnected       = false;
@@ -28,11 +29,11 @@ namespace WIFI_Utils {
                 uint32_t WiFiCheck = millis() - lastBackupDigiTime;
                 if (WiFi.status() != WL_CONNECTED && WiFiCheck >= 15 * 60 * 1000) {
                     Serial.println("*** Stopping BackUp Digi Mode ***");
-                    backUpDigiMode = false;
+                    backUpDigiModeWiFi = false;
                     wifiCounter = 0;
                 } else if (WiFi.status() == WL_CONNECTED) {
                     Serial.println("*** WiFi Reconnect Success (Stopping Backup Digi Mode) ***");
-                    backUpDigiMode = false;
+                    backUpDigiModeWiFi = false;
                     wifiCounter = 0;
                 }
             }
@@ -49,8 +50,7 @@ namespace WIFI_Utils {
                 }
                 if (wifiCounter >= 2) {
                     Serial.println("*** Starting BackUp Digi Mode ***");
-                    backUpDigiMode = true;
-                    lastBackupDigiTime = millis();
+                    backUpDigiModeWiFi = true;
                 }
             }
         }
