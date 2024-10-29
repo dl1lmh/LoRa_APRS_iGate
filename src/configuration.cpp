@@ -254,7 +254,11 @@ void Configuration::init() {
     wifiAutoAP.password             = "1234567890";
     wifiAutoAP.timeout              = 10;
 
+#ifdef LAN_AVAILABLE
+    ethernet.ethernet_enable        = true;
+#else
     ethernet.ethernet_enable        = false;
+#endif
     ethernet.WiFi_enable            = true;
 
     callsign                        = "N0CALL-10";
