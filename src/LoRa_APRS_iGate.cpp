@@ -56,6 +56,9 @@ bool                isUpdatingOTA           = false;
 uint32_t            lastBatteryCheck        = 0;
 
 bool                backUpDigiMode          = false;
+bool                backUpDigiModeEth       = false;
+uint32_t            lastBackupDigiTime      = millis();
+
 bool                modemLoggedToAPRSIS     = false;
 
 std::vector<ReceivedPacket> receivedPackets;

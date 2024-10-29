@@ -7,6 +7,7 @@ namespace ETH_Utils {
     void checkETH();
     void setup();
     void startETH();
+    void EthEvent();
 }
 
 
