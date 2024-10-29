@@ -83,12 +83,12 @@ namespace ETH_Utils {
     }
 
     void startETH() {
-        unsigned long start = millis();
+        u_int8_t counter = 0;
         WiFi.onEvent(ETH_Utils::EthEvent);
-        displayShow("", "Connecting to LAN:", "", "...", 0);
+        displayShow("", "Connecting to LAN:", "", "       ...", 0);
         Serial.print("Connecting to LAN: ");
         ETH.begin();
-        while (((!EthLink) && (!EthGotIP)) || ((millis() - start) > 10000))
+        while (((EthLink && EthGotIP) == false) || (counter <= 10))                                                
         {
             delay(500);
             #ifdef INTERNAL_LED_PIN
@@ -99,12 +99,7 @@ namespace ETH_Utils {
             #ifdef INTERNAL_LED_PIN
                 digitalWrite(INTERNAL_LED_PIN,LOW);
             #endif
-        }
-        if ((millis() - start) > 10000) {
-            displayShow("", "LAN TIMEOUT!", "", "...", 0);
-            Serial.println("\nLAN Timeout!");
-            EthConnected = false;
-            delay(5000);
+            counter++;
         }
         if (EthLink && EthGotIP) EthConnected = true;
         #ifdef INTERNAL_LED_PIN
