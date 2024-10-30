@@ -57,8 +57,6 @@ bool                isUpdatingOTA           = false;
 uint32_t            lastBatteryCheck        = 0;
 
 bool                backUpDigiMode          = false;
-bool                backUpDigiModeEth       = false;
-bool                backUpDigiModeWiFi      = false;
 uint32_t            lastBackupDigiTime      = 0;
 
 bool                modemLoggedToAPRSIS     = false;

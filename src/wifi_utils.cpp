@@ -11,7 +11,6 @@ extern uint8_t          myWiFiAPIndex;
 extern int              myWiFiAPSize;
 extern WiFi_AP          *currentWiFi;
 extern bool             backUpDigiMode;
-extern bool             backUpDigiModeWiFi;
 extern uint32_t         lastBackupDigiTime;
 
 bool        WiFiConnected       = false;

@@ -6,7 +6,6 @@
 
 extern Configuration    Config;
 extern bool             backUpDigiMode;
-extern bool             backUpDigiModeEth;
 extern uint32_t         lastBackupDigiTime;
 
 uint32_t    previousEthMillis  = 0;
