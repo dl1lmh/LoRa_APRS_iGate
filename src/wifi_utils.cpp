@@ -11,13 +11,14 @@ extern uint8_t          myWiFiAPIndex;
 extern int              myWiFiAPSize;
 extern WiFi_AP          *currentWiFi;
 extern bool             backUpDigiMode;
+extern bool             backUpDigiModeWiFi;
+extern uint32_t         lastBackupDigiTime;
 
 bool        WiFiConnected       = false;
 uint32_t    WiFiAutoAPTime      = millis();
 bool        WiFiAutoAPStarted   = false;
 uint32_t    previousWiFiMillis  = 0;
 uint8_t     wifiCounter         = 0;
-uint32_t    lastBackupDigiTime  = millis();
 
 
 namespace WIFI_Utils {
@@ -153,8 +154,10 @@ namespace WIFI_Utils {
     }
 
     void setup() {
-        if (!Config.digi.ecoMode) startWiFi();
-        btStop();
+        if ((!Config.digi.ecoMode) && !Config.ethernet.use_lan) {
+            startWiFi();
+            btStop();
+        }
     }
 
 }

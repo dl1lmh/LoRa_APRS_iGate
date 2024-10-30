@@ -8,6 +8,7 @@
 #include "digi_utils.h"
 #include "display.h"
 #include "utils.h"
+#include "eth_utils.h"
 
 extern Configuration        Config;
 extern WiFiClient           espClient;
@@ -21,6 +22,7 @@ extern String               sixthLine;
 extern String               seventhLine;
 extern bool                 modemLoggedToAPRSIS;
 extern bool                 backUpDigiMode;
+extern bool                 EthConnected;
 
 uint32_t lastRxTime         = millis();
 
@@ -67,14 +69,16 @@ namespace APRS_IS_Utils {
     }
 
     void checkStatus() {
-        String wifiState, aprsisState;
-        if (WiFi.status() == WL_CONNECTED) {
-            wifiState = "OK";
+        String netState, aprsisState;
+        if (!Config.ethernet.use_lan && (WiFi.status() == WL_CONNECTED)) {
+            netState = "WiFi: OK";
+        } else if (Config.ethernet.use_lan && EthConnected) {
+            netState = "LAN: OK";
         } else {
-            if (backUpDigiMode || Config.digi.ecoMode) {
-                wifiState = "--";
+            if (backUpDigiMode || Config.digi.ecoMode || (Config.ethernet.use_lan && !EthConnected) ) {
+                netState = "Net: -- ";
             } else {
-                wifiState = "AP";
+                netState = "WiFi: AP";
             }            
             if (!Config.display.alwaysOn && Config.display.timeout != 0) {
                 displayToggle(true);
@@ -103,8 +107,7 @@ namespace APRS_IS_Utils {
                 lastScreenOn = millis();
             }            
         }
-        secondLine = "WiFi: ";
-        secondLine += wifiState;
+        secondLine = netState;
         secondLine += " APRS-IS: ";
         secondLine += aprsisState;
     }

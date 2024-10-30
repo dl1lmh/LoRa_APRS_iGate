@@ -154,6 +154,15 @@
     #define RADIO_TXEN          14
 #endif
 
+#ifdef OLIMEX_POE_ISO_DIY_LORAMODULE_BY_DL1LMH
+    #define RADIO_SCLK_PIN      14
+    #define RADIO_MOSI_PIN      2
+    #define RADIO_MISO_PIN      15
+    #define RADIO_CS_PIN        5
+    #define RADIO_BUSY_PIN      36
+    #define RADIO_RST_PIN       4
+#endif
+
 
 // OLED 
 #if defined(TTGO_LORA32_V2_1) || defined(ESP32_DIY_LoRa) || defined(ESP32_DIY_1W_LoRa) || defined(TTGO_T_BEAM_V1_0) || defined(TTGO_T_BEAM_V1_2) || defined(TTGO_T_BEAM_V1_0_SX1268) || defined(TTGO_T_BEAM_V1_2_SX1262) || defined(OE5HWN_MeshCom) || defined(ESP32_DIY_LoRa_A7670) || defined(TTGO_LORA32_V2_1_915) || defined(ESP32_DIY_LoRa_915) || defined(TTGO_T_BEAM_V1_0_915) || defined(TTGO_T_BEAM_V1_2_915) || defined(ESP32_DIY_LoRa_A7670_915) || defined(ESP32_DIY_1W_LoRa_915) || defined(ESP32_DIY_1W_LoRa_LLCC68) || defined(ESP32_DIY_1W_LoRa_Mesh_V1_2)
@@ -186,6 +195,11 @@
     #define OLED_RST    -1
 #endif
 
+#ifdef OLIMEX_POE_ISO_DIY_LORAMODULE_BY_DL1LMH
+    #define OLED_SDA    13
+    #define OLED_SCL    16
+    #define OLED_RST    -1
+#endif
 
 #if !defined(HELTEC_HTCT62) && !defined(HELTEC_WSL_V3) && !defined(ESP32C3_DIY_1W_LoRa) && !defined(ESP32C3_DIY_1W_LoRa_915) && !defined(WEMOS_S2_MINI_DIY_LoRa)
     #define HAS_DISPLAY
@@ -292,7 +306,7 @@
 #if defined( HELTEC_WIRELESS_TRACKER)
     #define GPS_RX              34
     #define GPS_TX              33
-#endif
+#endif 
 
 
 /* (Same pins for LILYGO LoRa32 and ESP32 Wroom Dev )
